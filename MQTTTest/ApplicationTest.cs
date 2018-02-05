@@ -8,7 +8,7 @@ using System.Collections.Generic;
 namespace MQTTTest
 {
     [TestClass]
-    public class UnitTest1
+    public class ApplicationTest
     {
 
         MQTTManager manager;
@@ -18,7 +18,7 @@ namespace MQTTTest
         public void TestSetUp()
         {
             manager = new MQTTManager();
-           
+
             manager.publishData(new string[] { "sampleClient", "Hell0", "0", "true" });
         }
         public void TestBreakDown()

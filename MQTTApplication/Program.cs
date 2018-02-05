@@ -6,6 +6,7 @@ using System.Configuration;
 
 using MySql.Data;
 using MySql.Data.MySqlClient;
+using MQTTApplication;
 
 
 
@@ -34,8 +35,12 @@ namespace MQTTApplication
                 {
                     Console.WriteLine("Write A Message");
                     s = Console.ReadLine();
-                    
-                    myManager.publishData(s.ToString().Split(" "));
+
+                    //if(myManager.publishData(s.ToString().Split(" ")))
+                   // {
+                        //MQTTManager.PostDeviceData(myManager.managerData).Wait();
+                    //}
+
                     
                 }
 

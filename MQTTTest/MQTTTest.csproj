@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\MQTTAPI\MQTTAPI.csproj" />
     <ProjectReference Include="..\MQTTApplication\MQTTApplication.csproj" />
   </ItemGroup>
 

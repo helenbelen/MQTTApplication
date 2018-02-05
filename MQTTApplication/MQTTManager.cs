@@ -2,17 +2,36 @@
 using uPLibrary.Networking.M2Mqtt.Messages;
 using uPLibrary.Networking.M2Mqtt;
 using System.Configuration;
+using System.Net;
+using System.Net.Http;
+
+
+using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+
 
 namespace MQTTApplication
 {
+    public struct DataPackage {
+
+        int _clientid;
+        DateTime _timestamp;
+        string _data;
+        public int ClientID { get { return _clientid; } set { _clientid = value; } }
+        public DateTime TimeStamp { get { return _timestamp; } set { _timestamp = value; } }
+        public string Data { get { return _data; } set { _data = value; } }
+    }
+
   
     
     public class MQTTManager :IDisposable
     {
         string messageSent;
         MqttClient client;
-       
-        
+        static HttpClient httpClient;
+        static string baseURL = "http://mqttapi-dev.us-east-1.elasticbeanstalk.com//api/DeviceData/";
+        DataPackage dataPackage;
         public MQTTManager()
         {
             //connect to database
@@ -20,62 +39,45 @@ namespace MQTTApplication
            client = new MqttClient("34.231.187.147");
             string clientId = Guid.NewGuid().ToString();
             client.Connect(clientId);
-          
+           
 
         }
 
-       
-        public bool addData(string clientId, string newData = null, int[] dataArray = null)
+        public DataPackage managerData
         {
-            return false;
-        }
-
-        public string getData(string clientId, DateTime start, DateTime end)
-        {
-            return "data";
-        }
-
-        public bool addClient(string id, string dataType)
-        {
-            return false;
-        }
-
-        public string getClients()
-        {
-            return "all clients";
-        }
-
-        
-        public bool setupAdmin(string name, string password)
-        {
-            return false;
+            get { return dataPackage; }
+            set { dataPackage = value; }
         }
 
         public bool publishData(string [] args)
         {
-           
-           if(args.Length == 3)
-            { 
+            string confirmedString = "Data was submitted to Database";
+            string badformatString = "Data was not formated Correctly. Please ensure you submit in the following format: [clientid]*[Date (yyyy-MM-dd HH: mm tt)]*[Data]. Do not include the * character in your data";
+            string[] confirmedArray = confirmedString.Split(" ");
+            string[] badformatArray= badformatString.Split(" ");
+           if (args.Length == 3)
+            {
                 //client id, DateTime, Data
-                string clientID = args[0];
-                string timeStamp = args[1];
-                string data = args[2];
-                
-               foreach(string s in args)
-                {
-                    System.Console.Write(s);
-                }
+               
+                dataPackage = new DataPackage();
+                dataPackage.ClientID = Int32.Parse(args[0]);
+                dataPackage.TimeStamp = Convert.ToDateTime(args[1]);
+                dataPackage.Data = args[2];
+                PostDeviceData(dataPackage).Wait();
 
-               client.Publish("test/Linux", System.Text.Encoding.UTF8.GetBytes("Data was submitted to Database"));
+                System.Console.WriteLine("Database Values:");
+                foreach (string s in args)
+                {
+                    System.Console.WriteLine(s);
+                }
+              
+              
                 return true;
             }
-            else
-            {
-                client.Publish("test/Linux", System.Text.Encoding.UTF8.GetBytes("Data was not formated Correctly. Please ensure you submit in the following format: [clientid]*[Date (yyyy-MM-dd HH: mm tt)]*[Data]. Do not include the * character in your data"));
-                return false;              
-            }
 
-                      
+           
+
+            return false;      
            
         }
 
@@ -84,11 +86,14 @@ namespace MQTTApplication
 
             // register to message received
            client.MqttMsgPublishReceived += client_MqttMsgPublishReceived;
-
-            // subscribe to the topic "/home/temperature" with QoS 2
-           client.Subscribe(new string[] { "test/Linux" }, new byte[] { MqttMsgBase.QOS_LEVEL_AT_LEAST_ONCE });
-
             
+            
+                // subscribe to the topic "/home/temperature" with QoS 2
+                client.Subscribe(new string[] { "test/Linux" }, new byte[] { MqttMsgBase.QOS_LEVEL_AT_LEAST_ONCE });
+            
+            
+
+
         }
 
         public void client_MqttMsgPublishReceived(object sender, MqttMsgPublishEventArgs e)
@@ -96,20 +101,36 @@ namespace MQTTApplication
 
            
             this.RecentMessage = System.Text.Encoding.UTF8.GetString(e.Message);
-        
-           
-            System.Console.WriteLine("The Message format status was : " + RecentMessage);
+            this.publishData(this.RecentMessage.Split(" "));
+            
+           // System.Console.WriteLine("The Message format status was : " + RecentMessage);
             
         }
 
      
-        // PUBLISHER
+        public static async Task<Uri> PostDeviceData(DataPackage newData)
+        {
+            httpClient = new HttpClient();
+            JObject device = new JObject(new JProperty("DeviceID", newData.ClientID), new JProperty("TimeStamp", newData.TimeStamp), new JProperty("Data", newData.Data));
+
+            HttpResponseMessage response = await httpClient.PostAsJsonAsync(baseURL, device);
+            
+            response.EnsureSuccessStatusCode();
+            return response.Headers.Location;
+        }
 
         public string RecentMessage { set { messageSent = value; } get { return messageSent; } }
 
         public void Dispose()
         {
-            client.Disconnect();
+            if (client.IsConnected)
+            {
+                client.Disconnect();
+            }
+            if (httpClient != null)
+            {
+                httpClient.Dispose();
+            }
         }
     }
 }
