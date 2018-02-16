@@ -19,13 +19,11 @@ namespace MQTTApplication
 
         static void Main(string[] args)
         {
-
+            
 
             using (myManager)
             {
 
-               
-                // client.Connect(clientId, "adAgency", "password", true, 60);
                 myManager.subscribe();
 
                 Console.WriteLine("Welcome To The MQTT Manager");
@@ -33,15 +31,7 @@ namespace MQTTApplication
                 string s = "";
                 while (s != "exit")
                 {
-                    Console.WriteLine("Write A Message");
-                    s = Console.ReadLine();
-
-                    //if(myManager.publishData(s.ToString().Split(" ")))
-                   // {
-                        //MQTTManager.PostDeviceData(myManager.managerData).Wait();
-                    //}
-
-                    
+                                      
                 }
 
             }

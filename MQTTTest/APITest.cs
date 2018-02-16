@@ -4,14 +4,14 @@ using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MQTTAPI.Controllers;
-using MQTTAPI.Models;
+//using MQTTAPI.Models;
 
 namespace MQTTTest
 {
     [TestClass]
     public class APITest
     {
-        DeviceData api;
+       /*
         TestDeviceDataController testController;
         List<DeviceData> testData;
         public void TestSetup()
@@ -47,7 +47,7 @@ namespace MQTTTest
         }
 
         [TestMethod]
-        public void GetDeviceByID_ShouldFail()
+        public void GetDeviceByID_ShouldBeNull()
         {
             TestSetup();
             int deviceiD = 999;
@@ -67,7 +67,7 @@ namespace MQTTTest
 
             return testData;
 
-        }
+        }*/
 
     }
 }

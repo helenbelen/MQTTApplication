@@ -9,74 +9,139 @@ using MQTTAPI.Models;
 
 namespace MQTTAPI.Controllers
 {
+    
     [Route("api/[controller]")]
     public class DeviceDataController : Controller
     {
+        
         private readonly MQTTContext _context;
 
         public DeviceDataController(MQTTContext context)
         {
             _context = context;
         }
-        // GET: api/<controller>
-        [HttpGet]
-        public IEnumerable<DeviceData> Get()
-        {
-            return _context.DeviceData.ToList();
-        }
 
         // GET api/<controller>/5
-        [HttpGet("{id}",Name ="GetDevice")]
 
-        public IActionResult Get(int id)
+        [HttpGet]
+
+        public IActionResult Get(string name)
         {
-            var device = _context.DeviceData.FirstOrDefault(d => d.DeviceId == id);
+            var device = _context.DeviceList.FirstOrDefault(d => d.DeviceName == name);
             if (device == null)
             {
                 return NotFound();
             }
 
-           return new ObjectResult(device);
+            return new ObjectResult(device);
 
         }
 
+        [HttpGet]
+
+        public IActionResult GetBroker()
+        {
+            var ip = _context.ConnectionInfo.FirstOrDefault(connection => connection.InfoName == "mosquitto");
+            if (ip == null)
+            {
+                return NotFound();
+            }
+
+            return new ObjectResult(ip.InfoString);
+
+        }
+        //
+        // Manage Device List
+        //
+        [HttpPost]
+        public IActionResult RegisterDevice(string name)
+        {
+            if (name == null)
+            {
+                return BadRequest();
+            }
+
+            var device = _context.DeviceList.FirstOrDefault(d => d.DeviceName == null);
+            device.DeviceName = name;
+            _context.DeviceList.Update(device);
+            _context.SaveChanges();
+
+            return new NoContentResult();
+
+        }
+
+        [HttpGet]
+        public IEnumerable<DeviceList> GetDevices()
+        {
+            return _context.DeviceList.ToList();
+        }
+
+
+        //
+        //    Manage Device Data 
+        //
+        // GET: api/<controller>
+        [HttpGet]
+        public IEnumerable<DeviceData> GetData()
+        {
+            return _context.DeviceData.ToList();
+        }
+
+        
+
         // POST api/<controller>
         [HttpPost]
-        public IActionResult Create([FromBody]DeviceData HTTPargs)
+        public IActionResult AddData([FromBody]DeviceData HTTPargs)
         {
             if(HTTPargs == null)
             {
                 return BadRequest();
             }
 
-            
-            /*DeviceData d = new DeviceData();
-            d.DeviceId = int.Parse(args[0]);
-            d.Timestamp = new DateTime(int.Parse(args[1]));
-            d.Data = args[2];*/
-            
+            var device = _context.DeviceList.FirstOrDefault(d => d.DeviceName == HTTPargs.DeviceName);
+            if (device == null)
+            {
+                return BadRequest("This Device Is Not Registered");
+            }
+                       
             _context.DeviceData.Add(HTTPargs);
             _context.SaveChanges();
 
-            return CreatedAtRoute("GetDevice", new { id = HTTPargs.DeviceId }, HTTPargs);
+            return CreatedAtRoute("GetDevice", new { id = HTTPargs.DeviceName }, HTTPargs);
 
         }
 
 
-        // PUT api/<controller>/5
-        [HttpPut("{id}")]
-        /*public void Put(int id, [FromBody]string value)
+        // POST api/<controller>
+        [HttpPost("{name}/{location}")]
+        public IActionResult UpdateLocation(string name, string location)
         {
-            
-        }*/
+            if (name == null || location == null)
+            {
+                return BadRequest();
+            }
+
+            var device = _context.DeviceList.FirstOrDefault(d => d.DeviceName == name);
+            if (device == null)
+            {
+                return BadRequest("This Device Is Not Registered");
+            }
+            device.DeviceLocation = location;
+            _context.DeviceList.Update(device);
+            _context.SaveChanges();
+
+            return CreatedAtRoute("GetDevice", new { newName = device.DeviceName }, location);
+
+        }
+
 
         // DELETE api/<controller>/5
         //Testing Purposes
-        [HttpDelete("{id}/{auth}")]
-        public IActionResult Delete(int id, string auth)
+        [HttpDelete("{name}/{auth}")]
+        public IActionResult Delete(string name, string auth)
         {
 
-            var device = _context.DeviceData.FirstOrDefault(d => d.DeviceId == id);
+            var device = _context.DeviceData.FirstOrDefault(d => d.DeviceName == name);
             if (device == null)
             {
                 return NotFound();

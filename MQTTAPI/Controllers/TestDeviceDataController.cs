@@ -13,6 +13,7 @@ namespace MQTTAPI.Controllers
     [Route("api/TestDeviceData")]
     public class TestDeviceDataController : Controller
     {
+        
 
         List<DeviceData> testData = new List<DeviceData>();
 
@@ -28,9 +29,9 @@ namespace MQTTAPI.Controllers
             return testData.ToList();
         }
 
-        public IActionResult Get(int id)
+        public IActionResult Get(string name)
         {
-            var device = testData.FirstOrDefault(d => d.DeviceId == id);
+            var device = testData.FirstOrDefault(d => d.DeviceName == name);
             if (device == null)
             {
                 return NotFound();

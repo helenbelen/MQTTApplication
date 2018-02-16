@@ -15,54 +15,37 @@ namespace MQTTApplication
 {
     public struct DataPackage {
 
-        int _clientid;
-        DateTime _timestamp;
-        string _data;
-        public int ClientID { get { return _clientid; } set { _clientid = value; } }
-        public DateTime TimeStamp { get { return _timestamp; } set { _timestamp = value; } }
-        public string Data { get { return _data; } set { _data = value; } }
+        public string clientName { get; set; }
+        public DateTime TimeStamp { get; set; }
+        public string Data { get; set; }
     }
 
-  
-    
-    public class MQTTManager :IDisposable
+
+
+    public class MQTTManager : IDisposable
     {
-        string messageSent;
+
         MqttClient client;
         static HttpClient httpClient;
-        static string baseURL = "http://mqttapi-dev.us-east-1.elasticbeanstalk.com//api/DeviceData/";
+        static string baseURL = ConfigurationManager.AppSettings["APIurl"];
         DataPackage dataPackage;
         public MQTTManager()
         {
-            //connect to database
             //connect to mosquitto
-           client = new MqttClient("34.231.187.147");
+            client = new MqttClient(ConfigurationManager.AppSettings["MosquittoIP"]);
             string clientId = Guid.NewGuid().ToString();
             client.Connect(clientId);
-           
 
         }
 
-        public DataPackage managerData
-        {
-            get { return dataPackage; }
-            set { dataPackage = value; }
-        }
+        public string Topic {get;set;}
 
         public bool publishData(string [] args)
         {
-            string confirmedString = "Data was submitted to Database";
-            string badformatString = "Data was not formated Correctly. Please ensure you submit in the following format: [clientid]*[Date (yyyy-MM-dd HH: mm tt)]*[Data]. Do not include the * character in your data";
-            string[] confirmedArray = confirmedString.Split(" ");
-            string[] badformatArray= badformatString.Split(" ");
-           if (args.Length == 3)
+            
+           if (checkDataFormat(args))
             {
-                //client id, DateTime, Data
                
-                dataPackage = new DataPackage();
-                dataPackage.ClientID = Int32.Parse(args[0]);
-                dataPackage.TimeStamp = Convert.ToDateTime(args[1]);
-                dataPackage.Data = args[2];
                 PostDeviceData(dataPackage).Wait();
 
                 System.Console.WriteLine("Database Values:");
@@ -81,37 +64,39 @@ namespace MQTTApplication
            
         }
 
+        public bool checkDataFormat(string [] args)
+        {
+            dataPackage = new DataPackage();
+            dataPackage.clientName = args[0];
+            dataPackage.TimeStamp = DateTime.Now;
+            dataPackage.Data = args[1];
+           //Check if Device Exists
+            return args.Length == 2 ? true : false;
+        }
         public void subscribe()
         {
-
             // register to message received
            client.MqttMsgPublishReceived += client_MqttMsgPublishReceived;
-            
-            
-                // subscribe to the topic "/home/temperature" with QoS 2
-                client.Subscribe(new string[] { "test/Linux" }, new byte[] { MqttMsgBase.QOS_LEVEL_AT_LEAST_ONCE });
-            
-            
-
+                        
+           // subscribe to the topic "/home/temperature" with QoS 2
+           client.Subscribe(new string[] { ConfigurationManager.AppSettings["DefaultTopic"] }, new byte[] { MqttMsgBase.QOS_LEVEL_AT_LEAST_ONCE });
+          
 
         }
 
         public void client_MqttMsgPublishReceived(object sender, MqttMsgPublishEventArgs e)
         {
-
-           
-            this.RecentMessage = System.Text.Encoding.UTF8.GetString(e.Message);
-            this.publishData(this.RecentMessage.Split(" "));
-            
-           // System.Console.WriteLine("The Message format status was : " + RecentMessage);
-            
+                       
+            this.publishData(System.Text.Encoding.UTF8.GetString(e.Message).Split(" "));
+                                  
         }
 
      
         public static async Task<Uri> PostDeviceData(DataPackage newData)
         {
             httpClient = new HttpClient();
-            JObject device = new JObject(new JProperty("DeviceID", newData.ClientID), new JProperty("TimeStamp", newData.TimeStamp), new JProperty("Data", newData.Data));
+            JObject device = new JObject(new JProperty("DeviceName", newData.clientName), 
+                new JProperty("TimeStamp", newData.TimeStamp), new JProperty("Data", newData.Data));
 
             HttpResponseMessage response = await httpClient.PostAsJsonAsync(baseURL, device);
             
@@ -119,7 +104,13 @@ namespace MQTTApplication
             return response.Headers.Location;
         }
 
-        public string RecentMessage { set { messageSent = value; } get { return messageSent; } }
+        public static async Task<Uri> GetDevice(DataPackage newData)
+        {
+            httpClient = new HttpClient();
+            HttpResponseMessage response = await httpClient.GetAsync(baseURL +"/"+ newData.clientName);
+            return response.Headers.Location;
+        }
+
 
         public void Dispose()
         {

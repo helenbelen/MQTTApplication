@@ -32,7 +32,7 @@ namespace MQTTTest
 
             this.TestSetUp();
             
-                Assert.AreEqual(true, manager.publishData(RandomMessage()), "Manager is Not checking format of published messages correctly");
+                Assert.AreEqual(true, manager.checkDataFormat(RandomMessage()), "Manager is Not checking format of published messages correctly");
             this.TestBreakDown();
         }
         

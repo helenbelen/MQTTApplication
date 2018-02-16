@@ -259,3 +259,9 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
+*.config
+MQTTAPI/Models/MQTTContext.cs
+MQTTAPI/Models/MQTTContext.cs
+*.cs
+MQTTAPI/Models/MQTTContext.cs
+MQTTAPI/Models/MQTTContext.cs
