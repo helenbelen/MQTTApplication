@@ -4,15 +4,16 @@
     "profile" : "VisualStudioUser",
     "region"  : "us-east-1",
     "application" : "MQTTAPI",
-    "environment" : "MQTTAPI-dev",
-    "cname"       : "mqttapi-dev",
+    "environment" : "MQTTAPI-prod",
+    "cname"       : "mqttapi-prod",
     "solution-stack" : "64bit Windows Server 2016 v1.2.0 running IIS 10.0",
     "environment-type" : "SingleInstance",
     "instance-profile" : "aws-elasticbeanstalk-ec2-role",
     "service-role"     : "aws-elasticbeanstalk-service-role",
     "health-check-url" : "/",
     "instance-type"    : "t2.micro",
-    "key-pair"         : "MQTTAPIKey",
+    "key-pair"         : "SSE554Project1",
     "iis-website"      : "Default Web Site",
-    "app-path"         : "/"
+    "app-path"         : "/",
+    "enable-xray"      : false
 }
