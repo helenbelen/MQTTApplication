@@ -53,15 +53,15 @@ namespace WebAPI.Controllers
 
         // POST: api/DeviceData/5
 
-        [HttpPost("{id}")]
-        public IActionResult Post(int id, [FromBody]string data)
+        [HttpPost]
+        public IActionResult Post([FromBody]DeviceData dataItem)
         {
-             if(_context.DeviceList.Any(d => d.DeviceId == id && d.DeviceName != null))
+             if(_context.DeviceList.Any(d => d.DeviceId == dataItem.DeviceId && d.DeviceName != null))
             {
                 DeviceData deviceData = new DeviceData();
-                deviceData.DeviceId = id;
+                deviceData.DeviceId = dataItem.DeviceId;
                 deviceData.Timestamp = DateTime.Now;
-                deviceData.Data = data;
+                deviceData.Data = dataItem.Data;
                 _context.DeviceData.Add(deviceData);
                 _context.SaveChanges();
                 return new ObjectResult("Data Has Been Added!");
