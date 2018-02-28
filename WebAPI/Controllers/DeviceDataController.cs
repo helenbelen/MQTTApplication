@@ -18,8 +18,8 @@ namespace WebAPI.Controllers
             _context = context;
         }
         // GET: api/DeviceData
-       
-             
+
+
         [HttpGet]
         public IEnumerable<DeviceData> Get()
         {
@@ -32,41 +32,51 @@ namespace WebAPI.Controllers
         public IActionResult GetConnectionInfo()
         {
             var ip = _context.ConnectionInfo.FirstOrDefault(d => d.InfoName == "mosquitto");
-            if(ip == null)
+            if (ip == null)
             {
                 return new NoContentResult();
             }
             return new ObjectResult(ip.InfoString);
         }
 
-       
+
         //GET: api/DeviceData/5
-        [HttpGet("{id}")]
+        [Route("~/api/DeviceData/GetDeviceData/{id}")]
+        [HttpGet]
         public IActionResult Get(int id)
         {
-            
+
             var deviceData = _context.DeviceData.Where(d => d.DeviceId == id);
-          
+
             return new ObjectResult(deviceData);
         }
 
 
         // POST: api/DeviceData/5
-
-        [HttpPost]
-        public IActionResult Post([FromBody]DeviceData dataItem)
+        [Route("~/api/DeviceData/AddData/{device}/{data}")]
+        [HttpPut]
+        public IActionResult AddData(int device, string data)
         {
-             if(_context.DeviceList.Any(d => d.DeviceId == dataItem.DeviceId && d.DeviceName != null))
+            if (device <= 0 || data == null)
             {
+                return BadRequest();
+            }
+            if(_context.DeviceList.Any(d => d.DeviceId == device && d.DeviceName != null))
+            {
+
+                var lastData = _context.DeviceData.LastOrDefault(d => d.Data != null);
+                int dataID = lastData.DataId + 1;
+                DateTime newTimestamp = DateTime.Now;
                 DeviceData deviceData = new DeviceData();
-                deviceData.DeviceId = dataItem.DeviceId;
-                deviceData.Timestamp = DateTime.Now;
-                deviceData.Data = dataItem.Data;
+                deviceData.DataId = dataID;
+                deviceData.DeviceId = device;
+                deviceData.TimeStamp = newTimestamp;
+                deviceData.Data = data;
                 _context.DeviceData.Add(deviceData);
                 _context.SaveChanges();
-                return new ObjectResult("Data Has Been Added!");
+                return new ObjectResult("Data Added");
             }
-            return BadRequest("Data has not been added. Please ensure Device has been registered");
+            return new BadRequestObjectResult("An Unknown Error Occured.");
             
         }
 

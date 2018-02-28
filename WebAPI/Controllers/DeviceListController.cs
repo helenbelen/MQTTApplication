@@ -27,7 +27,8 @@ namespace WebAPI.Controllers
         }
 
         // GET: api/DeviceList/5
-        [HttpGet("{id}", Name = "Get")]
+        [Route("~/api/DeviceList/GetDevice/{id}")]
+        [HttpGet]
         public IActionResult Get(int id)
         {
 
@@ -36,11 +37,12 @@ namespace WebAPI.Controllers
             return new ObjectResult(deviceData);
         }
 
-                     
+
 
         // POST: api/DeviceList
+       [Route("~/api/DeviceList/RegisterDevice/{name}")]
         [HttpPost]
-        public IActionResult Post([FromBody]string name)
+        public IActionResult RegisterDevice(string name)
         {
             if (_context.DeviceList.Any(d => d.DeviceName == name))
             {
@@ -59,11 +61,14 @@ namespace WebAPI.Controllers
             }
             return BadRequest("An error has occured and your device was not registered. Please contact the API Admin");
         }
-        
+
         // PUT: api/DeviceList/5
-        [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody]string location)
+        [Route("~/api/DeviceList/UpdateLocation/{id}/{location}")]
+        [HttpPut]
+
+        public IActionResult UpdateLocation(int id, string location)
         {
+            
             if (_context.DeviceList.Any(d => d.DeviceId == id && d.DeviceName != null))
             {
                 var device = _context.DeviceList.First(d => d.DeviceId == id);

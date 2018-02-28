@@ -15,7 +15,7 @@ namespace MQTTDashboard.Controllers
 {
     public class HomeController : Controller
     {
-        static private readonly string baseURL = "http://webapi-dev.us-east-1.elasticbeanstalk.com/api/Device/";
+        static private readonly string baseURL = "http://webapi-dev.us-east-1.elasticbeanstalk.com/api/DeviceData/";
         static HttpClient httpClient;
         static List<DataItem> dataItems = new List<DataItem>();
         public IActionResult Index()
@@ -58,7 +58,7 @@ namespace MQTTDashboard.Controllers
             using (var httpClient = new HttpClient())
             {
 
-                var response =  httpClient.GetStringAsync(new Uri(baseURL + "GetData")).Result;
+                var response =  httpClient.GetStringAsync(new Uri(baseURL)).Result;
 
                 var releases = JArray.Parse(response);
                 foreach (Object o in releases)

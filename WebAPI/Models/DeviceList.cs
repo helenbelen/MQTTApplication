@@ -8,8 +8,5 @@ namespace WebAPI.Models
         public int DeviceId { get; set; }
         public string DeviceName { get; set; }
         public string DeviceLocation { get; set; }
-
-        public DeviceList Device { get; set; }
-        public DeviceList InverseDevice { get; set; }
     }
 }
