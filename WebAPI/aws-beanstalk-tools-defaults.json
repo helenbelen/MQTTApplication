@@ -12,7 +12,7 @@
     "service-role"     : "aws-elasticbeanstalk-service-role",
     "health-check-url" : "/",
     "instance-type"    : "t2.micro",
-    "key-pair"         : "SSE554Project1",
+    "key-pair"         : "DevstackKeyPair",
     "iis-website"      : "Default Web Site",
     "app-path"         : "/",
     "enable-xray"      : false

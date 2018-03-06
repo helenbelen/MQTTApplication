@@ -6,18 +6,13 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MQTTDashboard.Models;
 using System.Configuration;
-using System.Net;
-using System.Net.Http;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+
 
 namespace MQTTDashboard.Controllers
 {
     public class HomeController : Controller
     {
-        static private readonly string baseURL = "http://webapi-dev.us-east-1.elasticbeanstalk.com/api/DeviceData/";
-        static HttpClient httpClient;
-        static List<DataItem> dataItems = new List<DataItem>();
+      
         public IActionResult Index()
         {
             return View();
@@ -44,30 +39,39 @@ namespace MQTTDashboard.Controllers
 
         public  IActionResult DataItems()
         {
-            dataItems.Clear();
-            GetDeviceData();
-            return View(dataItems);
+            APIAdapter.GetDeviceData().Wait();
+           return View(APIAdapter.DataList);
           
         }
-
-
-        public static async Task GetDeviceData()
+        public IActionResult DeviceList()
         {
-            httpClient = new HttpClient();
-            
-            using (var httpClient = new HttpClient())
+            APIAdapter.GetDeviceList().Wait();
+            return View(APIAdapter.DeviceList);
+
+        }
+        public IActionResult EditDevice(int id)
+        {
+            Device device = APIAdapter.DeviceList.FirstOrDefault(dev => dev.DeviceId == id);
+
+            return View(device);
+        }
+        public IActionResult UpdateDevice(Device updatedDevice)
+        {
+
+            APIAdapter.GetDeviceList().Wait();
+            Device device = APIAdapter.DeviceList.FirstOrDefault(dev => dev.DeviceId == updatedDevice.DeviceId);
+           
+          if(device.DeviceName != null && updatedDevice.DeviceLocation != device.DeviceLocation)
             {
-
-                var response =  httpClient.GetStringAsync(new Uri(baseURL)).Result;
-
-                var releases = JArray.Parse(response);
-                foreach (Object o in releases)
-                {
-                    dataItems.Add(JsonConvert.DeserializeObject<DataItem>(o.ToString()));
-                }
+                APIAdapter.UpdateDeviceLocation(updatedDevice.DeviceId, updatedDevice.DeviceLocation).Wait();
             }
 
-            
+
+            return RedirectToAction("DeviceList");
+
         }
+
+
+
     }
 }
