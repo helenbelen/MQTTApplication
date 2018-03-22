@@ -26,9 +26,8 @@ namespace WebAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
-            //var connection = "Server=mosquittodatabase.cffo0eijbrmb.us-east-1.rds.amazonaws.com,1433;Database=MQTT;Integrated Security=False;User ID=admin;Password=mosquitto;Connect Timeout=30;Encrypt=False;TrustServerCertificate=True;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;";
-            var connection = "Server=192.168.1.49;Database=MQTT;User ID=SA;Password=Wafflegeek42;";
-            services.AddDbContext<HomeAutomationContext>(options => options.UseSqlServer(connection));
+            var connectString = MQTTCommon.Resources.sqlConnectionString;
+            services.AddDbContext<HomeAutomationContext>(options => options.UseSqlServer(connectString));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

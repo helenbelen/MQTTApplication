@@ -28,12 +28,12 @@ namespace MQTTApplication
 
         MqttClient client;
         static HttpClient httpClient;
-        static string baseURL = ConfigurationManager.AppSettings["APIurl"];
+        static Uri baseURL = new Uri(MQTTCommon.Resources.webApiUrl);
         DataPackage dataPackage;
         public MQTTManager()
         {
             //connect to mosquitto
-            client = new MqttClient(ConfigurationManager.AppSettings["MosquittoIP"]);
+            client = new MqttClient(MQTTCommon.Resources.brokerUrl);
             string clientId = Guid.NewGuid().ToString();
             client.Connect(clientId);
 

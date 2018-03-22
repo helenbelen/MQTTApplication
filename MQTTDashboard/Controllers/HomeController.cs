@@ -12,10 +12,7 @@ namespace MQTTDashboard.Controllers
 {
     public class HomeController : Controller
     {
-        //static private readonly string baseURL = "http://webapi-dev.us-east-1.elasticbeanstalk.com/api/Device/";
-        static private readonly string baseURL = "http://localhost:51412/api/Device/";
-        static HttpClient httpClient;
-        static List<DataItem> dataItems = new List<DataItem>();
+      
         public IActionResult Index()
         {
             return View();
@@ -66,18 +63,14 @@ namespace MQTTDashboard.Controllers
            
           if(device.DeviceName != null && updatedDevice.DeviceLocation != device.DeviceLocation)
             {
-
-                var response =  httpClient.GetStringAsync(new Uri(baseURL + "GetData")).Result;
-
-                var releases = JArray.Parse(response);
-                foreach (Object o in releases)
-                {
-                    dataItems.Add(JsonConvert.DeserializeObject<DataItem>(o.ToString()));
-                }
+                APIAdapter.UpdateDeviceLocation(updatedDevice.DeviceId, updatedDevice.DeviceLocation).Wait();
             }
 
-            
+
+            return RedirectToAction("DeviceList");
+
         }
+
 
 
     }
