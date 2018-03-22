@@ -15,7 +15,8 @@ namespace MQTTDashboard.Controllers
 {
     public class HomeController : Controller
     {
-        static private readonly string baseURL = "http://webapi-dev.us-east-1.elasticbeanstalk.com/api/Device/";
+        //static private readonly string baseURL = "http://webapi-dev.us-east-1.elasticbeanstalk.com/api/Device/";
+        static private readonly string baseURL = "http://localhost:51412/api/Device/";
         static HttpClient httpClient;
         static List<DataItem> dataItems = new List<DataItem>();
         public IActionResult Index()
