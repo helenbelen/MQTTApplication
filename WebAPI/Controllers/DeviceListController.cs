@@ -35,9 +35,7 @@ namespace WebAPI.Controllers
 
             return new ObjectResult(deviceData);
         }
-
-                     
-
+        
         // POST: api/DeviceList
         [HttpPost]
         public IActionResult Post([FromBody]string name)
@@ -48,16 +46,21 @@ namespace WebAPI.Controllers
             }
             else
             {
-                var device = _context.DeviceList.First(d => d.DeviceName == null);
-                if (device != null)
+                try
                 {
-                    device.DeviceName = name;
-                    _context.Update(device);
+                    var device = new DeviceList()
+                    {
+                        DeviceName = name,
+                    };
+                    _context.Add(device);
                     _context.SaveChanges();
                     return new ObjectResult("Your Device is registered and has a device Id of: " + device.DeviceId + " Please keep this for your records. You will not be able to retrieve this again without contacting the API Admin");
                 }
+                catch
+                {
+                    return BadRequest("An error has occured and your device was not registered. Please contact the API Admin");
+                }
             }
-            return BadRequest("An error has occured and your device was not registered. Please contact the API Admin");
         }
         
         // PUT: api/DeviceList/5
