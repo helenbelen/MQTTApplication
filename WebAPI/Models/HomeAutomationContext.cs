@@ -12,15 +12,7 @@ namespace WebAPI.Models
 
         public HomeAutomationContext(DbContextOptions<HomeAutomationContext> options): base(options)
         {
-
-        }
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer(@"Server=mosquittodatabase.cffo0eijbrmb.us-east-1.rds.amazonaws.com,1433;Initial Catalog=MQTT;Integrated Security=False;User ID=admin;Password=mosquitto;Connect Timeout=30;TrustServerCertificate=True;");
-            }
+            Database.EnsureCreated();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -44,9 +36,10 @@ namespace WebAPI.Models
 
             modelBuilder.Entity<DeviceData>(entity =>
             {
-                entity.HasKey(e => e.DeviceId);
+                entity.HasKey(e => e.DataId);
 
-                entity.Property(e => e.DeviceId).ValueGeneratedNever();
+                entity.Property(e => e.DeviceId)
+                    .ValueGeneratedNever();
 
                 entity.Property(e => e.Data)
                     .IsRequired()
@@ -63,9 +56,9 @@ namespace WebAPI.Models
                     .HasColumnName("DeviceID")
                     .ValueGeneratedNever();
 
-                entity.Property(e => e.DeviceLocation).HasColumnType("nchar(10)");
+                entity.Property(e => e.DeviceLocation).HasColumnType("varchar").HasMaxLength(60);
 
-                entity.Property(e => e.DeviceName).HasColumnType("nchar(10)");
+                entity.Property(e => e.DeviceName).HasColumnType("varchar").HasMaxLength(60);
 
                 entity.HasOne(d => d.Device)
                     .WithOne(p => p.InverseDevice)
