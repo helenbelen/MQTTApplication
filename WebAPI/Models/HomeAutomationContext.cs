@@ -10,7 +10,7 @@ namespace WebAPI.Models
         public virtual DbSet<DeviceData> DeviceData { get; set; }
         public virtual DbSet<DeviceList> DeviceList { get; set; }
 
-        public HomeAutomationContext(DbContextOptions<HomeAutomationContext> options): base(options)
+        public HomeAutomationContext(DbContextOptions<HomeAutomationContext> context): base(context)
         {
             Database.EnsureCreated();
         }
@@ -38,14 +38,17 @@ namespace WebAPI.Models
             {
                 entity.HasKey(e => e.DataId);
 
-                entity.Property(e => e.DeviceId)
-                    .ValueGeneratedNever();
+                entity.Property(e => e.DataId)
+                    .HasColumnName("DataID")
+                    .UseSqlServerIdentityColumn();
 
                 entity.Property(e => e.Data)
                     .IsRequired()
                     .HasColumnType("nchar(10)");
 
-                entity.Property(e => e.Timestamp).HasColumnType("smalldatetime");
+                entity.Property(e => e.DeviceId).HasColumnName("DeviceID");
+
+                entity.Property(e => e.TimeStamp).HasColumnType("smalldatetime");
             });
 
             modelBuilder.Entity<DeviceList>(entity =>
@@ -54,17 +57,11 @@ namespace WebAPI.Models
 
                 entity.Property(e => e.DeviceId)
                     .HasColumnName("DeviceID")
-                    .ValueGeneratedNever();
+                    .UseSqlServerIdentityColumn();
 
-                entity.Property(e => e.DeviceLocation).HasColumnType("varchar").HasMaxLength(60);
+                entity.Property(e => e.DeviceLocation).HasMaxLength(60);
 
-                entity.Property(e => e.DeviceName).HasColumnType("varchar").HasMaxLength(60);
-
-                entity.HasOne(d => d.Device)
-                    .WithOne(p => p.InverseDevice)
-                    .HasForeignKey<DeviceList>(d => d.DeviceId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_DeviceList_DeviceList");
+                entity.Property(e => e.DeviceName).HasMaxLength(60);
             });
         }
     }

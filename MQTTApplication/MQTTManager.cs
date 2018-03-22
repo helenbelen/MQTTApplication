@@ -46,23 +46,23 @@ namespace MQTTApplication
 
             if (checkDataFormat(args))
             {
-
-                PostDeviceData(dataPackage).Wait();
-
                 System.Console.WriteLine("Database Values:");
                 foreach (string s in args)
                 {
                     System.Console.WriteLine(s);
                 }
 
-
-                return true;
+                try
+                {
+                    PostDeviceData(dataPackage).Wait();
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    System.Console.WriteLine("Failed to submit data to API.");
+                }
             }
-
-
-
             return false;
-
         }
 
         public bool checkDataFormat(string[] args)
@@ -96,11 +96,10 @@ namespace MQTTApplication
         public static async Task<Uri> PostDeviceData(DataPackage newData)
         {
             httpClient = new HttpClient();
-            JObject device = new JObject(new JProperty("DeviceName", newData.clientName),
-                new JProperty("TimeStamp", newData.TimeStamp), new JProperty("Data", newData.Data));
+            var data = new JValue(newData.Data);
+            var url = baseURL + $"DeviceData/AddData/{newData.clientName}/{newData.Data}";
 
-            HttpResponseMessage response = await httpClient.PostAsJsonAsync(baseURL, device);
-
+            var response = await httpClient.PutAsJsonAsync(url, data);
             response.EnsureSuccessStatusCode();
             return response.Headers.Location;
         }
