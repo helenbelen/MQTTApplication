@@ -1,0 +1,35 @@
+﻿
+@{
+    ViewData["Title"] = "System Graphs";
+}
+
+<h2>System Graphs</h2>
+
+<head>
+   <style>
+
+
+   </style>
+</head>
+<body>
+    <div id="chartone_container">
+        <canvas id="bar_chart_one"></canvas>
+    </div>
+
+
+    <div id="charttwo_container">
+        <canvas id="bar_chart_two"></canvas>
+    </div>
+    <script>
+        var chartone_x = @Html.Raw(Json.Serialize(ViewBag.AverageChart_X));
+        var chartone_y = @Html.Raw(Json.Serialize(ViewBag.AverageChart_Y));
+
+        var charttwo_x = @Html.Raw(Json.Serialize(ViewBag.DateChart_X));
+        var charttwo_y = @Html.Raw(Json.Serialize(ViewBag.DateChart_Y));
+
+        var ctx = $(bar_chart_one);
+        var ctx2 = $(bar_chart_two);
+
+    </script>
+
+</body>

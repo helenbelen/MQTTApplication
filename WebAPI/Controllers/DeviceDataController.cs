@@ -53,15 +53,15 @@ namespace WebAPI.Controllers
 
 
         // POST: api/DeviceData/5
-        [Route("~/api/DeviceData/AddData/{device}/{data}")]
+        [Route("~/api/DeviceData/AddData/{deviceID}/{data}")]
         [HttpPut]
-        public IActionResult AddData(int device, string data)
+        public IActionResult AddData(int deviceID, string data)
         {
-            if (device <= 0 || data == null)
+            if (deviceID <= 0 || data == null)
             {
                 return BadRequest();
             }
-            if(_context.DeviceList.Any(d => d.DeviceId == device && d.DeviceName != null))
+            if(_context.DeviceList.Any(d => d.DeviceId == deviceID && d.DeviceName != null))
             {
 
                 var lastData = _context.DeviceData.LastOrDefault(d => d.Data != null);
@@ -69,7 +69,7 @@ namespace WebAPI.Controllers
                 DateTime newTimestamp = DateTime.Now;
                 DeviceData deviceData = new DeviceData();
                 deviceData.DataId = dataID;
-                deviceData.DeviceId = device;
+                deviceData.DeviceId = deviceID;
                 deviceData.TimeStamp = newTimestamp;
                 deviceData.Data = data;
                 _context.DeviceData.Add(deviceData);
