@@ -22,7 +22,7 @@ namespace MQTTDashboard
     }
     public static class APIAdapter
     {
-        static private readonly string baseURL = "http://webapi-dev.us-east-1.elasticbeanstalk.com/api/";
+        static private readonly string baseURL = MQTTCommon.Resources.webApiUrl;
         static HttpClient httpClient;
         static List<DataItem> dataItems = new List<DataItem>();
         static List<Device> deviceList = new List<Device>();
