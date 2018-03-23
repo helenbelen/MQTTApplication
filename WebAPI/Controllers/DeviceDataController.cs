@@ -63,15 +63,12 @@ namespace WebAPI.Controllers
             }
             if(_context.DeviceList.Any(d => d.DeviceId == device && d.DeviceName != null))
             {
-
-                var lastData = _context.DeviceData.LastOrDefault(d => d.Data != null);
-                int dataID = lastData.DataId + 1;
-                DateTime newTimestamp = DateTime.Now;
-                DeviceData deviceData = new DeviceData();
-                deviceData.DataId = dataID;
-                deviceData.DeviceId = device;
-                deviceData.TimeStamp = newTimestamp;
-                deviceData.Data = data;
+                DeviceData deviceData = new DeviceData
+                {
+                    DeviceId = device,
+                    TimeStamp = DateTime.Now,
+                    Data = data
+                };
                 _context.DeviceData.Add(deviceData);
                 _context.SaveChanges();
                 return new ObjectResult("Data Added");

@@ -23,5 +23,10 @@
   <ItemGroup>
     <DotNetCliToolReference Include="Amazon.ElasticBeanstalk.Tools" Version="1.1.0" />
   </ItemGroup>
+
+
+  <ItemGroup>
+    <ProjectReference Include="..\MQTTCommon\MQTTCommon.csproj" />
+  </ItemGroup>
 </Project>
 
