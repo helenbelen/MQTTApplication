@@ -88,7 +88,7 @@ namespace MQTTDashboard.Controllers
         {
             Dictionary<string, double> chartData = new Dictionary<string, double>();
             int count;
-            int total;
+            float total;
             foreach (Device d in APIAdapter.DeviceList)
             {
                 count = 0;
@@ -100,10 +100,9 @@ namespace MQTTDashboard.Controllers
 
                         try
                         {
-                            int number = Int32.Parse(item.Data);
+                            var number = float.Parse(item.Data.Trim());
                             total = total + number;
                             count++;
-
                         }
                         catch (FormatException)
                         {
@@ -134,7 +133,6 @@ namespace MQTTDashboard.Controllers
                 count = 0;
                 string date = d.Timestamp.ToShortDateString();
 
-
                 if (!chartData.ContainsKey(date))
                 {
                     foreach(DataItem item in APIAdapter.DataList)
@@ -143,10 +141,9 @@ namespace MQTTDashboard.Controllers
                         {
                             count++;
                         }
-                    }   
+                    }
+                    chartData.Add(date, count);
                 }
-
-                chartData.Add(date, count);
             }
             return chartData;
         }
