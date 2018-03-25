@@ -17,9 +17,8 @@ namespace WebAPI.Controllers
         {
             _context = context;
         }
+
         // GET: api/DeviceData
-
-
         [HttpGet]
         public IEnumerable<DeviceData> Get()
         {
@@ -34,7 +33,13 @@ namespace WebAPI.Controllers
             var ip = _context.ConnectionInfo.FirstOrDefault(d => d.InfoName == "mosquitto");
             if (ip == null)
             {
-                return new NoContentResult();
+                ip = new Models.ConnectionInfo()
+                {
+                    InfoName = "mosquitto",
+                    InfoString = MQTTCommon.Resources.brokerUrl,
+                };
+                _context.ConnectionInfo.Add(ip);
+                _context.SaveChanges();
             }
             return new ObjectResult(ip.InfoString);
         }
@@ -45,9 +50,7 @@ namespace WebAPI.Controllers
         [HttpGet]
         public IActionResult Get(int id)
         {
-
             var deviceData = _context.DeviceData.Where(d => d.DeviceId == id);
-
             return new ObjectResult(deviceData);
         }
 
@@ -63,33 +66,17 @@ namespace WebAPI.Controllers
             }
             if(_context.DeviceList.Any(d => d.DeviceId == deviceID && d.DeviceName != null))
             {
-<<<<<<< HEAD
-
-                var lastData = _context.DeviceData.LastOrDefault(d => d.Data != null);
-                int dataID = lastData.DataId + 1;
-                DateTime newTimestamp = DateTime.Now;
-                DeviceData deviceData = new DeviceData();
-                deviceData.DataId = dataID;
-                deviceData.DeviceId = deviceID;
-                deviceData.TimeStamp = newTimestamp;
-                deviceData.Data = data;
-=======
                 DeviceData deviceData = new DeviceData
                 {
-                    DeviceId = device,
+                    DeviceId = deviceID,
                     TimeStamp = DateTime.Now,
                     Data = data
                 };
->>>>>>> 1b7ccec37e41bbe33e0a8fea02309be090294d01
                 _context.DeviceData.Add(deviceData);
                 _context.SaveChanges();
                 return new ObjectResult("Data Added");
             }
             return new BadRequestObjectResult("An Unknown Error Occured.");
-            
         }
-
-
-        
     }
 }

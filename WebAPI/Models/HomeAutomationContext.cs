@@ -12,7 +12,17 @@ namespace WebAPI.Models
 
         public HomeAutomationContext(DbContextOptions<HomeAutomationContext> context): base(context)
         {
-            Database.EnsureCreated();
+            var created = Database.EnsureCreated();
+            if (created)
+            {
+                var ip = new Models.ConnectionInfo()
+                {
+                    InfoName = "mosquitto",
+                    InfoString = MQTTCommon.Resources.brokerUrl,
+                };
+                ConnectionInfo.Add(ip);
+                SaveChanges();
+            }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
