@@ -16,9 +16,25 @@ namespace WebAPI.Controllers
         public DeviceDataController(HomeAutomationContext context)
         {
             _context = context;
+            
+            
         }
         // GET: api/DeviceData
 
+        private void SaveIPString()
+        {
+
+            var ip = _context.ConnectionInfo.FirstOrDefault(d => d.InfoName == "mosquitto");
+            if (ip == null)
+            {
+                Models.ConnectionInfo info = new Models.ConnectionInfo();
+                info.InfoName = "mosquitto";
+                info.InfoString = MQTTCommon.Resources.brokerUrl;
+                _context.ConnectionInfo.Add(info);
+                _context.SaveChanges();
+            }
+          
+        }
 
         [HttpGet]
         public IEnumerable<DeviceData> Get()
@@ -31,6 +47,7 @@ namespace WebAPI.Controllers
         [HttpGet]
         public IActionResult GetConnectionInfo()
         {
+            SaveIPString();
             var ip = _context.ConnectionInfo.FirstOrDefault(d => d.InfoName == "mosquitto");
             if (ip == null)
             {
@@ -54,7 +71,7 @@ namespace WebAPI.Controllers
 
         // POST: api/DeviceData/5
         [Route("~/api/DeviceData/AddData/{deviceID}/{data}")]
-        [HttpPut]
+        [HttpPost]
         public IActionResult AddData(int deviceID, string data)
         {
             if (deviceID <= 0 || data == null)
@@ -63,24 +80,12 @@ namespace WebAPI.Controllers
             }
             if(_context.DeviceList.Any(d => d.DeviceId == deviceID && d.DeviceName != null))
             {
-<<<<<<< HEAD
 
-                var lastData = _context.DeviceData.LastOrDefault(d => d.Data != null);
-                int dataID = lastData.DataId + 1;
-                DateTime newTimestamp = DateTime.Now;
                 DeviceData deviceData = new DeviceData();
-                deviceData.DataId = dataID;
                 deviceData.DeviceId = deviceID;
-                deviceData.TimeStamp = newTimestamp;
+                deviceData.TimeStamp = DateTime.Now;
                 deviceData.Data = data;
-=======
-                DeviceData deviceData = new DeviceData
-                {
-                    DeviceId = device,
-                    TimeStamp = DateTime.Now,
-                    Data = data
-                };
->>>>>>> 1b7ccec37e41bbe33e0a8fea02309be090294d01
+               //deviceData.Device = (DeviceList)_context.DeviceList.Where(d => d.DeviceId == deviceID);
                 _context.DeviceData.Add(deviceData);
                 _context.SaveChanges();
                 return new ObjectResult("Data Added");

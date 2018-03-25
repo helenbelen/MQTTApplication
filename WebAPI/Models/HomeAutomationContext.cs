@@ -12,7 +12,7 @@ namespace WebAPI.Models
 
         public HomeAutomationContext(DbContextOptions<HomeAutomationContext> context): base(context)
         {
-            Database.EnsureCreated();
+           Database.EnsureCreated();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

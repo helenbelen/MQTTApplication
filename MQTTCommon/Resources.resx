@@ -117,29 +117,13 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  
-  
-  <!-- !!!!!!!!!!  Helen's Version  !!!!!!!!!!
   <data name="brokerUrl" xml:space="preserve">
     <value>34.231.187.147</value>
   </data>
   <data name="sqlConnectionString" xml:space="preserve">
-    <value>Server=mosquittodatabase.cffo0eijbrmb.us-east-1.rds.amazonaws.com,1433;Database=MQTT;Integrated Security=False;User ID=admin;Password=mosquitto;Connect Timeout=30;Encrypt=False;TrustServerCertificate=True;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;</value>
-  </data>
-  <data name="webApiUrl" xml:space="preserve">
-    <value>http://webapi-dev.us-east-1.elasticbeanstalk.com/api/</value>
-  </data>
-  -->
-  
-  <!-- !!!!!!!!!!  Danny's Version !!!!!!!!!! -->
-  <data name="brokerUrl" xml:space="preserve">
-    <value>192.168.1.49</value>
-  </data>
-  <data name="sqlConnectionString" xml:space="preserve">
-    <value>Server=192.168.1.49;Database=MQTT;User ID=SA;Password=Wafflegeek42;</value>
+    <value>Data Source=mosquittodatabase.cffo0eijbrmb.us-east-1.rds.amazonaws.com,1433;Initial Catalog=MQTTDatabase;Integrated Security=False;User ID=admin;Password=mosquitto;Connect Timeout=30;Encrypt=False;TrustServerCertificate=True;</value>
   </data>
   <data name="webApiUrl" xml:space="preserve">
     <value>http://localhost:51412/api/</value>
   </data>
-  
 </root>

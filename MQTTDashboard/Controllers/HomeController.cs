@@ -132,14 +132,14 @@ namespace MQTTDashboard.Controllers
             foreach(DataItem d in APIAdapter.DataList)
             {
                 count = 0;
-                string date = d.Timestamp.ToShortDateString();
+                string date = d.TimeStamp.ToShortDateString();
 
 
                 if (!chartData.ContainsKey(date))
                 {
                     foreach(DataItem item in APIAdapter.DataList)
                     {
-                        if(item.Timestamp.ToShortDateString() == date)
+                        if(item.TimeStamp.ToShortDateString() == date)
                         {
                             count++;
                         }
