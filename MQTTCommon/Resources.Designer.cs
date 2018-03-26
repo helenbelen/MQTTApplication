@@ -79,7 +79,7 @@ namespace MQTTCommon {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to http://localhost:51412/api/.
+        ///   Looks up a localized string similar to http://webapi-dev.us-east-1.elasticbeanstalk.com/api/.
         /// </summary>
         public static string webApiUrl {
             get {

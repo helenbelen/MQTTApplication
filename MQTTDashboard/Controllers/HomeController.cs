@@ -6,13 +6,16 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MQTTDashboard.Models;
 using System.Configuration;
-
+using Newtonsoft.Json;
 
 namespace MQTTDashboard.Controllers
 {
     public class HomeController : Controller
     {
-      
+        Dictionary<string, double> chartData;
+       List<Device> deviceList;
+        List<DataItem> dataItems;
+
         public IActionResult Index()
         {
             return View();
@@ -34,14 +37,15 @@ namespace MQTTDashboard.Controllers
 
         public IActionResult Graphs()
         {
-            APIAdapter.GetDeviceData().Wait();
-            APIAdapter.GetDeviceList().Wait();
-            ViewBag.AverageChart_X = this.GetAverageData_Chart().Keys;
-            ViewBag.AverageChart_Y = this.GetAverageData_Chart().Values;
-
-            ViewBag.DateChart_X = this.GetDataByDate_Chart().Keys;
-            ViewBag.DateChart_Y = this.GetDataByDate_Chart().Values;
-
+            UpdateDeviceList();
+            UpdateDataList();
+            chartData = this.GetAverageData_Chart();
+            ViewBag.AverageChart_X = chartData.Keys.ToList<string>();
+            ViewBag.AverageChart_Y = chartData.Values.ToList<double>();
+            chartData = this.GetDataByDate_Chart();
+            ViewBag.DateChart_X = chartData.Keys.ToList<string>();
+            ViewBag.DateChart_Y = chartData.Values.ToList<double>();
+            
 
             return View();
         }
@@ -52,27 +56,28 @@ namespace MQTTDashboard.Controllers
 
         public  IActionResult DataItems()
         {
-            APIAdapter.GetDeviceData().Wait();
-           return View(APIAdapter.DataList);
+            UpdateDataList();
+           return View(dataItems);
           
         }
         public IActionResult DeviceList()
         {
-            APIAdapter.GetDeviceList().Wait();
-            return View(APIAdapter.DeviceList);
+            UpdateDeviceList();
+            return View(deviceList);
 
         }
         public IActionResult EditDevice(int id)
         {
-            Device device = APIAdapter.DeviceList.FirstOrDefault(dev => dev.DeviceId == id);
+           
+            Device device = deviceList.FirstOrDefault(dev => dev.DeviceId == id);
 
             return View(device);
         }
         public IActionResult UpdateDevice(Device updatedDevice)
         {
 
-            APIAdapter.GetDeviceList().Wait();
-            Device device = APIAdapter.DeviceList.FirstOrDefault(dev => dev.DeviceId == updatedDevice.DeviceId);
+           
+            Device device = deviceList.FirstOrDefault(dev => dev.DeviceId == updatedDevice.DeviceId);
            
           if(device.DeviceName != null && updatedDevice.DeviceLocation != device.DeviceLocation)
             {
@@ -84,23 +89,39 @@ namespace MQTTDashboard.Controllers
 
         }
 
+        public void UpdateDataList()
+        {
+          
+            APIAdapter.GetInfo(URLType.DEVICEDATA).Wait();
+           dataItems = JsonConvert.DeserializeObject<List<DataItem>>(APIAdapter.APIResponse.ToString());
+        }
+
+        public void UpdateDeviceList()
+        {
+            APIAdapter.GetInfo(URLType.DEVICELIST).Wait();
+            deviceList = JsonConvert.DeserializeObject<List<Device>>(APIAdapter.APIResponse.ToString());
+          
+        }
+
         public Dictionary<string,double> GetAverageData_Chart()
         {
-            Dictionary<string, double> chartData = new Dictionary<string, double>();
-            int count;
-            int total;
-            foreach (Device d in APIAdapter.DeviceList)
+
+            Dictionary<string, double> avgchartData = new Dictionary<string, double>();
+            
+            double count;
+            double total;
+            foreach (Device d in deviceList)
             {
-                count = 0;
+                count = 1;
                 total = 0;
-                foreach (DataItem item in APIAdapter.DataList)
+                foreach (DataItem item in dataItems)
                 {
                     if (d.DeviceId == item.DeviceId)
                     {
 
                         try
                         {
-                            int number = Int32.Parse(item.Data);
+                            double number = Double.Parse(item.Data);
                             total = total + number;
                             count++;
 
@@ -118,37 +139,54 @@ namespace MQTTDashboard.Controllers
                     }
                 }
 
-                chartData.Add(d.DeviceName, (double)(total / count));
+                avgchartData.Add(d.DeviceName, (double)(total / count));
 
             }
 
-            return chartData;
+            return avgchartData;
         }
 
-        public Dictionary<string,int> GetDataByDate_Chart()
+        public Dictionary<string,double> GetDataByDate_Chart()
         {
-            Dictionary<string, int> chartData = new Dictionary<string,int>();
-            int count;
-            foreach(DataItem d in APIAdapter.DataList)
+          
+            Dictionary<string,double> datachartData = new Dictionary<string,double>();
+            
+            double count;
+            foreach(DataItem d in dataItems)
             {
-                count = 0;
+               
                 string date = d.TimeStamp.ToShortDateString();
 
 
-                if (!chartData.ContainsKey(date))
+                if (!datachartData.ContainsKey(date))
                 {
-                    foreach(DataItem item in APIAdapter.DataList)
+                    count = 0;
+                    foreach (DataItem item in dataItems)
                     {
-                        if(item.TimeStamp.ToShortDateString() == date)
+                        if (item.TimeStamp.ToShortDateString() == date)
                         {
                             count++;
                         }
-                    }   
-                }
+                    }
 
-                chartData.Add(date, count);
+                    datachartData.Add(date, count);
+                }
+                else if (datachartData.ContainsKey(date))
+                {
+                    count = 0;
+                    foreach (DataItem item in dataItems)
+                    {
+                        if (item.TimeStamp.ToShortDateString() == date)
+                        {
+                            count++;
+                        }
+                    }
+
+                    datachartData.Remove(date);
+                    datachartData.Add(date, count);
+                }
             }
-            return chartData;
+            return datachartData;
         }
 
     }

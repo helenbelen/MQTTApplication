@@ -124,6 +124,6 @@
     <value>Data Source=mosquittodatabase.cffo0eijbrmb.us-east-1.rds.amazonaws.com,1433;Initial Catalog=MQTTDatabase;Integrated Security=False;User ID=admin;Password=mosquitto;Connect Timeout=30;Encrypt=False;TrustServerCertificate=True;</value>
   </data>
   <data name="webApiUrl" xml:space="preserve">
-    <value>http://localhost:51412/api/</value>
+    <value>http://webapi-dev.us-east-1.elasticbeanstalk.com/api/</value>
   </data>
 </root>

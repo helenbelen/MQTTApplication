@@ -37,7 +37,7 @@
                 @Html.DisplayFor(modelItem => item.DeviceLocation)
             </td>
             <td>
-                @Html.ActionLink("Edit", "EditDevice", new { updatedDevice = item  }) |
+                @Html.ActionLink("Edit", "EditDevice",new { DeviceId = item.DeviceId, DeviceName = item.DeviceName, DeviceLocation = item.DeviceLocation })) |
              
           
             </td>

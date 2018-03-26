@@ -26,6 +26,8 @@ namespace MQTTDashboard
         static HttpClient httpClient;
         static List<DataItem> dataItems = new List<DataItem>();
         static List<Device> deviceList = new List<Device>();
+        static JArray result;
+
         public static string GetURL(URLType type, int id = -1, string info = null)
         {
             string url = "";
@@ -80,78 +82,31 @@ namespace MQTTDashboard
             return url;
         }
 
-        public static List<DataItem> DataList {get{return dataItems;} }
-        public static List<Device> DeviceList { get { return deviceList; } }
 
-        public static async Task GetDeviceData()
+        public static JArray APIResponse {get{return result;} }
+        public static async Task<JArray> GetInfo(URLType type)
         {
-            dataItems.Clear();
-            httpClient = new HttpClient();
-
-            using (var httpClient = new HttpClient())
-            {
-
-                var response = httpClient.GetStringAsync(new Uri(GetURL(URLType.DEVICEDATA))).Result;
-
-                var releases = JArray.Parse(response);
-                foreach (Object o in releases)
-                {
-                    dataItems.Add(JsonConvert.DeserializeObject<DataItem>(o.ToString()));
-                }
-            }
-
            
-        }
-
-        public static async Task GetDeviceList()
-        {
-            deviceList.Clear();
             httpClient = new HttpClient();
+            var response = await httpClient.GetStringAsync(new Uri(GetURL(type)));
 
-            using (var httpClient = new HttpClient())
-            {
-
-                var response = httpClient.GetStringAsync(new Uri(GetURL(URLType.DEVICELIST))).Result;
-
-                var releases = JArray.Parse(response);
-                foreach (Object o in releases)
-                {
-                    deviceList.Add(JsonConvert.DeserializeObject<Device>(o.ToString()));
-                }
-            }
-
-          
+            result = JArray.Parse(response);
+            return result;
         }
 
+     
         public static async Task UpdateDeviceLocation(int id, string info)
         {
-            
             httpClient = new HttpClient();
-
-            using (var httpClient = new HttpClient())
-            {
-                HttpContent content = null;
-                var response = httpClient.PutAsync(new Uri(GetURL(URLType.DEVICELOC,id,info)),content).Result;
-
-                
-            }
-
+            HttpContent content = null;
+            var response = httpClient.PutAsync(new Uri(GetURL(URLType.DEVICELOC,id,info)),content).Result;
 
         }
 
         public static async Task RegisterDevice(string info)
         {
-          
             httpClient = new HttpClient();
-
-            using (var httpClient = new HttpClient())
-            {
-
-                var response = httpClient.GetStringAsync(new Uri(GetURL(URLType.DEVICEREG,-1,info))).Result;
-
-
-            }
-
+            var response = httpClient.GetStringAsync(new Uri(GetURL(URLType.DEVICEREG,-1,info))).Result;
 
         }
     }

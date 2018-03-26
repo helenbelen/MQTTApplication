@@ -1,0 +1,130 @@
+﻿
+@model IEnumerable<string>
+@{
+    ViewData["Title"] = "System Graphs";
+}
+
+<h2>System Graphs</h2>
+
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
+    <style>
+    </style>
+</head>
+<body>
+    <ul></ul>
+   
+    <div id="chartone_container">
+        <canvas id="bar_chart_one"></canvas>
+
+        <script>
+           
+              var chartone_x = @Html.Raw(Json.Serialize(ViewBag.AverageChart_X));
+              var chartone_y = @Html.Raw(Json.Serialize(ViewBag.AverageChart_Y));
+
+            var ctx = document.getElementById("bar_chart_one").getContext('2d');
+
+            var myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: chartone_x,
+                    datasets: [{
+                        label: 'Average Of Data By Device',
+                        data: chartone_y,
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                            'rgba(75, 192, 192, 0.2)',
+                            'rgba(153, 102, 255, 0.2)',
+                            'rgba(255, 159, 64, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(255,99,132,1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    }
+                }
+            });
+
+        </script>
+
+
+        
+
+    </div>
+
+
+    <div id="charttwo_container">
+        <canvas id="bar_chart_two"></canvas>
+        <script>
+
+
+        var charttwo_x = @Html.Raw(Json.Serialize(ViewBag.DateChart_X));
+        var charttwo_y = @Html.Raw(Json.Serialize(ViewBag.DateChart_Y));
+
+        var ctx2 = document.getElementById("bar_chart_two").getContext('2d');
+
+
+
+
+
+            var myChart = new Chart(ctx2, {
+                type: 'bar',
+                data: {
+                    labels: charttwo_x,
+                        datasets: [{
+                            label: 'Number of Data Submissions By Date',
+                            data: charttwo_y,
+                            backgroundColor: [
+                                'rgba(255, 99, 132, 0.2)',
+                                'rgba(54, 162, 235, 0.2)',
+                                'rgba(255, 206, 86, 0.2)',
+                                'rgba(75, 192, 192, 0.2)',
+                                'rgba(153, 102, 255, 0.2)',
+                                'rgba(255, 159, 64, 0.2)'
+                            ],
+                            borderColor: [
+                                'rgba(255,99,132,1)',
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(255, 206, 86, 1)',
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(153, 102, 255, 1)',
+                                'rgba(255, 159, 64, 1)'
+                            ],
+                            borderWidth: 1
+                         }]
+                },
+            options: {
+                scales: {
+                yAxes: [{
+                ticks: {
+                beginAtZero:true
+                }
+            }]
+        }
+    }
+});
+
+        </script>
+    </div>
+
+
+</body>
