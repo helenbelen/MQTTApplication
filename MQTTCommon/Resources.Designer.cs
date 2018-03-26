@@ -61,7 +61,7 @@ namespace MQTTCommon {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 34.231.187.147.
+        ///   Looks up a localized string similar to 192.168.1.49.
         /// </summary>
         public static string brokerUrl {
             get {
@@ -70,7 +70,7 @@ namespace MQTTCommon {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Data Source=mosquittodatabase.cffo0eijbrmb.us-east-1.rds.amazonaws.com,1433;Initial Catalog=MQTTDatabase;Integrated Security=False;User ID=admin;Password=mosquitto;Connect Timeout=30;Encrypt=False;TrustServerCertificate=True;.
+        ///   Looks up a localized string similar to Data Source=192.168.1.49;Database=MQTT;User ID=SA;Password=Wafflegeek42;.
         /// </summary>
         public static string sqlConnectionString {
             get {

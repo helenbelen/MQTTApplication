@@ -118,8 +118,8 @@ namespace MQTTDashboard.Controllers
                     }
                 }
 
-                chartData.Add(d.DeviceName, (double)(total / count));
-
+                if (total > 0 && count > 0)
+                    chartData.Add(d.DeviceName, (double)(total / count));
             }
 
             return chartData;
@@ -143,10 +143,10 @@ namespace MQTTDashboard.Controllers
                         {
                             count++;
                         }
-                    }   
+                    }
+                    chartData.Add(date, count);
                 }
 
-                chartData.Add(date, count);
             }
             return chartData;
         }

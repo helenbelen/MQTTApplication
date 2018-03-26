@@ -118,10 +118,10 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="brokerUrl" xml:space="preserve">
-    <value>34.231.187.147</value>
+    <value>192.168.1.49</value>
   </data>
   <data name="sqlConnectionString" xml:space="preserve">
-    <value>Data Source=mosquittodatabase.cffo0eijbrmb.us-east-1.rds.amazonaws.com,1433;Initial Catalog=MQTTDatabase;Integrated Security=False;User ID=admin;Password=mosquitto;Connect Timeout=30;Encrypt=False;TrustServerCertificate=True;</value>
+    <value>Data Source=192.168.1.49;Database=MQTT;User ID=SA;Password=Wafflegeek42;</value>
   </data>
   <data name="webApiUrl" xml:space="preserve">
     <value>http://localhost:51412/api/</value>
