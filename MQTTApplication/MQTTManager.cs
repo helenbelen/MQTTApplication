@@ -109,7 +109,7 @@ namespace MQTTApplication
             var data = new JValue(newData.Data);
             var url = baseURL + $"DeviceData/AddData/{newData.clientID}/{newData.Data}";
 
-            var response = await httpClient.PutAsJsonAsync(url, data);
+            var response = await httpClient.PostAsJsonAsync(url, data);
             response.EnsureSuccessStatusCode();
             return response.Headers.Location;
         }
