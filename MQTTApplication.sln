@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebAPI", "WebAPI\WebAPI.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MQTTDashboard", "MQTTDashboard\MQTTDashboard.csproj", "{1DA7C248-DE74-4B29-8414-223D90278029}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MQTTCommon", "MQTTCommon\MQTTCommon.csproj", "{129B3F8E-8012-487D-9FC7-94AC031DA0FC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MQTTCommon", "MQTTCommon\MQTTCommon.csproj", "{129B3F8E-8012-487D-9FC7-94AC031DA0FC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebAPI.Models;
 
+
 namespace WebAPI.Controllers
 {
 
@@ -16,11 +17,12 @@ namespace WebAPI.Controllers
     {
         
         private readonly HomeAutomationContext _context;
+        private MQTTLocationBroadcast locationBroadcast = new MQTTLocationBroadcast();
         public DeviceListController(HomeAutomationContext context)
         {
             _context = context;
-            
-           
+
+      
         }
         // GET: api/DeviceList
        
@@ -54,7 +56,8 @@ namespace WebAPI.Controllers
            
             if (_context.DeviceList.Any(d => d.DeviceName == name))
             {
-                return new ObjectResult("This Device Has Already Been Registered");
+                var device = _context.DeviceList.First(d => d.DeviceName == name);
+                return new ObjectResult(device.DeviceId);
             }
             else
             {
@@ -65,7 +68,7 @@ namespace WebAPI.Controllers
                     device.DeviceName = name;
                     _context.Add(device);
                     _context.SaveChanges();
-                    return new ObjectResult("Your Device is registered and has a device Id of: " + device.DeviceId + " Please keep this for your records. You will not be able to retrieve this again without contacting the API Admin");
+                    return new ObjectResult(device.DeviceId);
                 }
                 catch (Exception ex)
                 {
@@ -87,6 +90,8 @@ namespace WebAPI.Controllers
                 device.DeviceLocation = location;
                 _context.Update(device);
                 _context.SaveChanges();
+                locationBroadcast.broadcastLocation(new string[] { "LOCATION", device.DeviceId.ToString(), device.DeviceLocation });
+                //Program.GetManager().broadcastLocation(new string[] { "LOCATION", device.DeviceId.ToString(), device.DeviceLocation });
                 return new ObjectResult("Location has been updated for Device #: " + id);
             }
             return BadRequest("Location has not been updated. Please ensure Device has been registered");

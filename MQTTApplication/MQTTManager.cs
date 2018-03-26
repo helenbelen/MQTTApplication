@@ -16,8 +16,7 @@ namespace MQTTApplication
     public struct DataPackage
     {
 
-        public string clientName { get; set; }
-        public DateTime TimeStamp { get; set; }
+        public string clientID { get; set; }
         public string Data { get; set; }
     }
 
@@ -44,14 +43,9 @@ namespace MQTTApplication
         public bool publishData(string[] args)
         {
 
-            if (checkDataFormat(args))
+            if (args.Length ==2 && checkDataFormat(args))
             {
-                System.Console.WriteLine("Database Values:");
-                foreach (string s in args)
-                {
-                    System.Console.WriteLine(s);
-                }
-
+               
                 try
                 {
                     PostDeviceData(dataPackage).Wait();
@@ -62,17 +56,23 @@ namespace MQTTApplication
                     System.Console.WriteLine("Failed to submit data to API.");
                 }
             }
+
+          
             return false;
         }
 
         public bool checkDataFormat(string[] args)
         {
-            dataPackage = new DataPackage();
-            dataPackage.clientName = args[0];
-            dataPackage.TimeStamp = DateTime.Now;
-            dataPackage.Data = args[1];
-            //Check if Device Exists
-            return args.Length == 2 ? true : false;
+           
+                dataPackage = new DataPackage();
+                dataPackage.clientID = args[0];
+
+                dataPackage.Data = args[1];
+                //Check if Device Exists
+
+                return GetDevice(dataPackage).Result != null ? true : false;
+            
+          
         }
         public void subscribe()
         {
@@ -85,10 +85,20 @@ namespace MQTTApplication
 
         }
 
+        public void broadcastLocation (string [] args)
+        {
+            if (args.Length == 3 && args[0] == "LOCATION")
+            {
+
+                client.Publish("Linux/locationUpdates", System.Text.Encoding.UTF8.GetBytes(args[1] + " " + args[2] ));
+                
+            }
+
+        }
         public void client_MqttMsgPublishReceived(object sender, MqttMsgPublishEventArgs e)
         {
 
-            this.publishData(System.Text.Encoding.UTF8.GetString(e.Message).Split(" "));
+            this.publishData(System.Text.Encoding.UTF8.GetString(e.Message).Split("-"));
 
         }
 
@@ -97,18 +107,18 @@ namespace MQTTApplication
         {
             httpClient = new HttpClient();
             var data = new JValue(newData.Data);
-            var url = baseURL + $"DeviceData/AddData/{newData.clientName}/{newData.Data}";
+            var url = baseURL + $"DeviceData/AddData/{newData.clientID}/{newData.Data}";
 
             var response = await httpClient.PutAsJsonAsync(url, data);
             response.EnsureSuccessStatusCode();
             return response.Headers.Location;
         }
 
-        public static async Task<Uri> GetDevice(DataPackage newData)
+        public static async Task<HttpContent> GetDevice(DataPackage newData)
         {
             httpClient = new HttpClient();
-            HttpResponseMessage response = await httpClient.GetAsync(baseURL + "/" + newData.clientName);
-            return response.Headers.Location;
+            HttpResponseMessage response = await httpClient.GetAsync(baseURL + "/" + newData.clientID);
+            return response.Content;
         }
 
 

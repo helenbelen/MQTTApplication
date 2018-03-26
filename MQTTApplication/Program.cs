@@ -12,7 +12,7 @@ using MQTTApplication;
 
 namespace MQTTApplication
 {
-    class Program
+    public class Program
     {
         static MQTTManager myManager = new MQTTManager();
 

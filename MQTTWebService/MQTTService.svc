@@ -1,0 +1,1 @@
+﻿<%@ ServiceHost Language="C#" Debug="true" Service="MQTTWebService.Service1" CodeBehind="MQTTService.svc.cs" %>
