@@ -7,6 +7,7 @@ namespace WebAPI.Models
     {
         public int DataId { get; set; }
         public DateTime TimeStamp { get; set; }
+        public string Topic { get; set; }
         public string Data { get; set; }
 
         public int DeviceId { get; set; }

@@ -19,8 +19,8 @@ namespace WebAPI.Controllers
             
             
         }
-        // GET: api/DeviceData
 
+        // GET: api/DeviceData
         private void SaveIPString()
         {
 
@@ -67,31 +67,30 @@ namespace WebAPI.Controllers
 
 
         // POST: api/DeviceData/5
-        [Route("~/api/DeviceData/AddData/{deviceID}/{data}")]
+        [Route("~/api/DeviceData/AddData/{deviceID}")]
         [HttpPost]
-        public IActionResult AddData(int deviceID, string data)
+        public IActionResult AddData(int deviceID, [FromBody] MQTTCommon.WebApiDeviceAddData json)
         {
-            if (deviceID <= 0 || data == null)
+            if (deviceID <= 0 || string.IsNullOrWhiteSpace(json.Data) || string.IsNullOrWhiteSpace(json.Topic))
             {
                 return BadRequest();
             }
+
             if(_context.DeviceList.Any(d => d.DeviceId == deviceID && d.DeviceName != null))
             {
-
-                DeviceData deviceData = new DeviceData();
-                deviceData.DeviceId = deviceID;
-                deviceData.TimeStamp = DateTime.Now;
-                deviceData.Data = data;
-               //deviceData.Device = (DeviceList)_context.DeviceList.Where(d => d.DeviceId == deviceID);
+                var deviceData = new DeviceData
+                {
+                    DeviceId = deviceID,
+                    TimeStamp = DateTime.Now,
+                    Data = json.Data,
+                    Topic = json.Topic
+                };
                 _context.DeviceData.Add(deviceData);
                 _context.SaveChanges();
                 return new ObjectResult("Data Added");
             }
+
             return new BadRequestObjectResult("An Unknown Error Occured.");
-            
         }
-
-
-        
     }
 }
