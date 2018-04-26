@@ -120,6 +120,12 @@
   <data name="brokerUrl" xml:space="preserve">
     <value>34.231.187.147</value>
   </data>
+  <data name="deviceID" xml:space="preserve">
+    <value>123</value>
+  </data>
+  <data name="myID" xml:space="preserve">
+    <value />
+  </data>
   <data name="sqlConnectionString" xml:space="preserve">
     <value>Data Source=mosquittodatabase.cffo0eijbrmb.us-east-1.rds.amazonaws.com,1433;Initial Catalog=MQTTDatabase;Integrated Security=False;User ID=admin;Password=mosquitto;Connect Timeout=30;Encrypt=False;TrustServerCertificate=True;</value>
   </data>

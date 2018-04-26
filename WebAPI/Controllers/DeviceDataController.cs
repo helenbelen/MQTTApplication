@@ -49,10 +49,7 @@ namespace WebAPI.Controllers
         {
             SaveIPString();
             var ip = _context.ConnectionInfo.FirstOrDefault(d => d.InfoName == "mosquitto");
-            if (ip == null)
-            {
-                return new NoContentResult();
-            }
+           
             return new ObjectResult(ip.InfoString);
         }
 

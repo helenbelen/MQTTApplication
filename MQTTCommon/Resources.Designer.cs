@@ -70,6 +70,24 @@ namespace MQTTCommon {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 123.
+        /// </summary>
+        public static string deviceID {
+            get {
+                return ResourceManager.GetString("deviceID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string myID {
+            get {
+                return ResourceManager.GetString("myID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Data Source=mosquittodatabase.cffo0eijbrmb.us-east-1.rds.amazonaws.com,1433;Initial Catalog=MQTTDatabase;Integrated Security=False;User ID=admin;Password=mosquitto;Connect Timeout=30;Encrypt=False;TrustServerCertificate=True;.
         /// </summary>
         public static string sqlConnectionString {
