@@ -21,19 +21,23 @@ namespace MQTTApplication
         public string Topic { get; set; }
     }
 
-
+    public struct WebApiDeviceAddData
+    {
+        public string Topic;
+        public string Data;
+    }
 
     public class MQTTManager : IDisposable
     {
 
         MqttClient client;
         HttpClient httpClient;
-        Uri baseURL = new Uri(MQTTCommon.Resources.webApiUrl);
+        Uri baseURL = new Uri("http://webapi-dev.us-east-1.elasticbeanstalk.com/api/");
 
         public MQTTManager()
         {
             //connect to mosquitto
-            client = new MqttClient(MQTTCommon.Resources.brokerUrl);
+            client = new MqttClient("34.231.187.147");
             string clientId = Guid.NewGuid().ToString();
             client.Connect(clientId);
 
@@ -52,7 +56,7 @@ namespace MQTTApplication
             client.MqttMsgPublishReceived += client_MqttMsgPublishReceived;
 
             // subscribe to the topic "/home/temperature" with QoS 2
-            client.Subscribe(new string[] { ConfigurationManager.AppSettings["DefaultTopic"] }, new byte[] { MqttMsgBase.QOS_LEVEL_AT_LEAST_ONCE });
+            client.Subscribe(new string[] {"/test/+/soilMoisture" }, new byte[] { MqttMsgBase.QOS_LEVEL_AT_LEAST_ONCE });
         }
 
         public void client_MqttMsgPublishReceived(object sender, MqttMsgPublishEventArgs e)
@@ -71,10 +75,12 @@ namespace MQTTApplication
                 try
                 {
                     PostDeviceData(parts[0].Trim(), dataPackage).Wait();
+                    Console.WriteLine("Data Saved");
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine("Failed to submit data to API.");
+                    Console.WriteLine(ex.Message);
                 }
             }
         }
@@ -83,9 +89,14 @@ namespace MQTTApplication
         {
             Console.WriteLine($"Submitting data - ID: {clientId}, Data: {newData.Data}, Topic: {newData.Topic}");
 
-            var url = $"DeviceData/AddData/{clientId}";
+
+            string url = $"http://webapi-dev.us-east-1.elasticbeanstalk.com/api/DeviceData/AddData/{clientId}";
             var response = await httpClient.PostAsJsonAsync(url, newData);
+
+           // var url = baseURL + "DeviceData/AddData/"+ clientId ;
+            //var response = await httpClient.PostAsJsonAsync(new Uri(url), newData);
             response.EnsureSuccessStatusCode();
+            
             return response.Headers.Location;
         }
 

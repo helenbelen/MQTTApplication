@@ -61,6 +61,24 @@ namespace MQTTCommon {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to /test/room/soilMoisture.
+        /// </summary>
+        public static string brokerTopic_publish {
+            get {
+                return ResourceManager.GetString("brokerTopic_publish", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to /test/+/soilMoisture.
+        /// </summary>
+        public static string brokerTopic_subscribe {
+            get {
+                return ResourceManager.GetString("brokerTopic_subscribe", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 34.231.187.147.
         /// </summary>
         public static string brokerUrl {
@@ -79,16 +97,7 @@ namespace MQTTCommon {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        public static string myID {
-            get {
-                return ResourceManager.GetString("myID", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Data Source=mosquittodatabase.cffo0eijbrmb.us-east-1.rds.amazonaws.com,1433;Initial Catalog=MQTTDatabase;Integrated Security=False;User ID=admin;Password=mosquitto;Connect Timeout=30;Encrypt=False;TrustServerCertificate=True;.
+        ///   Looks up a localized string similar to Data Source=mosquittodatabase.cffo0eijbrmb.us-east-1.rds.amazonaws.com,1433;Initial Catalog=MQTT;Integrated Security=False;User ID=admin;Password=mosquitto;Connect Timeout=30;Encrypt=False;TrustServerCertificate=True;.
         /// </summary>
         public static string sqlConnectionString {
             get {

@@ -117,17 +117,20 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="brokerTopic_publish" xml:space="preserve">
+    <value>/test/room/soilMoisture</value>
+  </data>
+  <data name="brokerTopic_subscribe" xml:space="preserve">
+    <value>/test/+/soilMoisture</value>
+  </data>
   <data name="brokerUrl" xml:space="preserve">
     <value>34.231.187.147</value>
   </data>
   <data name="deviceID" xml:space="preserve">
     <value>123</value>
   </data>
-  <data name="myID" xml:space="preserve">
-    <value />
-  </data>
   <data name="sqlConnectionString" xml:space="preserve">
-    <value>Data Source=mosquittodatabase.cffo0eijbrmb.us-east-1.rds.amazonaws.com,1433;Initial Catalog=MQTTDatabase;Integrated Security=False;User ID=admin;Password=mosquitto;Connect Timeout=30;Encrypt=False;TrustServerCertificate=True;</value>
+    <value>Data Source=mosquittodatabase.cffo0eijbrmb.us-east-1.rds.amazonaws.com,1433;Initial Catalog=MQTT;Integrated Security=False;User ID=admin;Password=mosquitto;Connect Timeout=30;Encrypt=False;TrustServerCertificate=True;</value>
   </data>
   <data name="webApiUrl" xml:space="preserve">
     <value>http://webapi-dev.us-east-1.elasticbeanstalk.com/api/</value>
