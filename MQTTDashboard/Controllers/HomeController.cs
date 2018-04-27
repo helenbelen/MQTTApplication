@@ -24,7 +24,7 @@ namespace MQTTDashboard.Controllers
             ViewData["DataItems"] = dataItems;
             Device device = deviceList.FirstOrDefault(dev => dev.DeviceName.Contains("Music"));
 
-            DataItem data = dataItems.FirstOrDefault(dat => dat.DeviceId == device.DeviceId);
+            DataItem data = dataItems.LastOrDefault(dat => dat.DeviceId == device.DeviceId);
             ViewData["MusicInfo"] = data;
 
             Dictionary<string, double>[] lists = this.GetChartData();
@@ -75,7 +75,7 @@ namespace MQTTDashboard.Controllers
             UpdateDataList();
             Device device = deviceList.FirstOrDefault(dev => dev.DeviceName.Contains("Music"));
 
-            DataItem data = dataItems.FirstOrDefault(dat => dat.DeviceId == device.DeviceId);
+            DataItem data = dataItems.LastOrDefault(dat => dat.DeviceId == device.DeviceId);
 
             ViewData["MusicInfo"] = data;
             return PartialView(data);
