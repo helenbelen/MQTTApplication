@@ -1,0 +1,25 @@
+﻿@model MQTTDashboard.Models.DataItem
+
+<div>
+    <h4>Music Information</h4>
+    <hr />
+    <dl class="dl-horizontal">
+
+        <dd>
+            Now Playing
+        </dd>
+        <dd>
+            @Html.DisplayFor(model => model.Data)
+        </dd>
+        <dt>
+            at 
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.TimeStamp)
+        </dd>
+     
+
+    
+    </dl>
+</div>
+

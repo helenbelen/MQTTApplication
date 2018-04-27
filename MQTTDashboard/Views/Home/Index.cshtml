@@ -4,59 +4,111 @@
 
 <!DOCTYPE html>
 <html>
-<head>
-    <style>
-        div.container {
-            width: 100%;
-            border: 1px solid gray;
-            padding: 50px;
-        }
 
-        header, footer {
-            padding: 1em;
-            color: white;
-            background-color: black;
-            clear: left;
-            text-align: center;
-        }
+ <meta name="viewport" content="width=device-width, initial-scale=1">
+ <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+ <head>
+     <style>
+         * {
+          box-sizing: border-box;
+         }
+         .col-1 {
+             width: 8.33%;
+         }
 
-       
-            nav ul {
-                list-style-type: none;
-                padding: 0;
-            }
+         .col-2 {
+             width: 16.66%;
+         }
 
-                nav ul a {
-                    text-decoration: none;
-                }
+         .col-3 {
+             width: 25%;
+         }
 
-        article {
-            margin-left: 170px;
-            border-left: 1px solid gray;
-            padding: 1em;
-            overflow: hidden;
-        }
-    </style>
-</head>
-<body>
+         .col-4 {
+             width: 33.33%;
+         }
 
-    <div class="container">
+         .col-5 {
+             width: 41.66%;
+         }
 
-        <header>
-            <h1>MQTT Dashboard</h1>
-        </header>
+         .col-6 {
+             width: 50%;
+         }
+
+         .col-7 {
+             width: 58.33%;
+         }
+
+         .col-8 {
+             width: 66.66%;
+         }
+
+         .col-9 {
+             width: 75%;
+         }
+
+         .col-10 {
+             width: 83.33%;
+         }
+
+         .col-11 {
+             width: 91.66%;
+         }
+
+         .col-12 {
+             width: 100%;
+         }
+         .row::after {
+             content: "";
+             clear: both;
+             display: table;
+         }
+
+         [class*="col-"] {
+             float: left;
+             padding: 20px;
+             
+         }
+         
+     </style>
+ </head>
+    <body>
+
+        <div class="w3-container w3-green">
+            <h1>Home Automation Dashboard</h1>
+            
+        </div>
+
+        <div class="row">
+            <div class="col-6">
+
+                <p>@{Html.RenderPartial("DataItems", ViewData["DataItems"]);}</p>
+
+            </div>
+            <div class="col-6">
+
+                <p>@{Html.RenderPartial("Music", ViewData["MusicInfo"]);}</p>
+
+            </div>
+            <div class="col-6">
+
+                <p>@{Html.RenderPartial("DeviceList", ViewData["DeviceList"]);}</p>
+
+            </div>
+
+            <div class="col-6">
+
+                <p>@{Html.RenderPartial("Graphs");}</p>
+
+            </div>
 
 
-        <article>
-            <h1>It's Time To Automate</h1>
-            <p>Use This Interface To View Device Data and Control Your Home System!.</p>
-        </article>
+        </div>
 
-     
 
-    </div>
-
-</body>
+        
+    </body>
 </html>
 
 
